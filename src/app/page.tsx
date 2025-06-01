@@ -1,103 +1,193 @@
-import Image from "next/image";
+"use client";
 
-export default function Home() {
+import { useEffect, useState } from "react";
+import FileUploader from "@app/components/FileUploader";
+import extractUsernames from "@app/utils/extractUsernames";
+import Modal from "@app/components/Modal";
+
+const HomePage = () => {
+  const [followersHTMLs, setFollowersHTMLs] = useState<string[]>([]);
+  const [followingHTMLs, setFollowingHTMLs] = useState<string[]>([]);
+  const [unfollowers, setUnfollowers] = useState<string[] | null>(null);
+  const [errorMessage, setErrorMessage] = useState<string>("");
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleCompare = () => {
+    const hasError = followersHTMLs.length === 0 || followingHTMLs.length === 0;
+
+    if (hasError) {
+      setUnfollowers(null);
+      setErrorMessage("Faltam arquivos a serem selecionados.");
+
+      return;
+    } else {
+      setErrorMessage("");
+    }
+
+    const followers = followersHTMLs.flatMap((html) => extractUsernames(html));
+    const following = followingHTMLs.flatMap((html) => extractUsernames(html));
+
+    const uniqueFollowers = Array.from(new Set(followers));
+    const uniqueFollowing = Array.from(new Set(following));
+
+    const notFollowingBack = uniqueFollowing.filter(
+      (username) => !uniqueFollowers.includes(username)
+    );
+
+    setUnfollowers(notFollowingBack);
+  };
+
+  const handleReset = () => setUnfollowers(null);
+
+  const handleHowToUse = () => setIsModalOpen(true);
+
+  useEffect(() => {
+    if (followersHTMLs.length > 0 && followingHTMLs.length > 0) {
+      setErrorMessage("");
+    }
+  }, [followersHTMLs, followingHTMLs]);
+
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
-
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+    <div className="border-1 rounded-2xl overflow-hidden">
+      <header className="p-4 flex items-center justify-between gap-5 w-[500px] max-w-[500px] ">
+        <div className="flex items-center justify-between gap-3">
+          <img
+            width={35}
+            height={35}
+            src="logo.webp"
+            alt="logo"
+            className="object-contain"
+          />
+          <p className="text-[16px] font-semibold">Quem não me segue?</p>
         </div>
+
+        <button
+          className="bg-blue-600 text-white px-4 py-2 rounded-xl cursor-pointer hover:brightness-75 duration-100"
+          onClick={handleHowToUse}
+        >
+          Como utilizar
+        </button>
+      </header>
+
+      <main className="bg-gray-100 p-4 pb-4 flex-col w-[500px] max-w-[500px]">
+        <div className="flex justify-between gap-4">
+          <FileUploader
+            id="followers"
+            label="Seguidores"
+            onFilesLoaded={setFollowersHTMLs}
+          />
+          <FileUploader
+            id="following"
+            label="Seguindo"
+            onFilesLoaded={setFollowingHTMLs}
+          />
+        </div>
+
+        <div className="flex justify-center items-center gap-1 mt-5">
+          <div className="flex flex-col items-center justify-center gap-1">
+            <button
+              className="bg-blue-600 w-[150px] max-w-[150px] text-white px-4 py-2 rounded-xl cursor-pointer hover:brightness-75 duration-100"
+              onClick={handleCompare}
+            >
+              Comparar
+            </button>
+            {errorMessage && <p className="text-red-500">{errorMessage}</p>}
+          </div>
+
+          {unfollowers && unfollowers.length > 0 && (
+            <button
+              className="bg-red-600 w-[150px] max-w-[150px] text-white px-4 py-2 rounded-xl cursor-pointer hover:brightness-75 duration-100"
+              onClick={handleReset}
+            >
+              Limpar
+            </button>
+          )}
+        </div>
+
+        {unfollowers && (
+          <div className="mt-6">
+            <h2 className="text-xl font-semibold mb-2">
+              Pessoas que você segue, mas possivelmente não te seguem:
+            </h2>
+            {unfollowers.length > 0 ? (
+              <ul className="list-disc pl-5">
+                {unfollowers.map((username, idx) => (
+                  <li key={idx}>
+                    <a
+                      href={`https://www.instagram.com/${username}/`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-500 hover:underline"
+                    >
+                      @{username}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p>Nenhum resultado encontrado.</p>
+            )}
+          </div>
+        )}
+        <Modal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          title="Como utilizar"
+        >
+          <ol className="list-decimal pl-5 space-y-2 text-gray-700">
+            <li>
+              <strong>Acesse o Instagram:</strong> Entre na sua conta pelo
+              navegador ou aplicativo.
+            </li>
+            <li>
+              <strong>Vá para Central de Contas:</strong> Clique no ícone de
+              menu (≡) e acesse <em>"Configurações"</em>. Continuamente, clique
+              em <em>"Central de Contas"</em> e depois{" "}
+              <em>"Suas informações e permissões"</em>. Selecione a opção{" "}
+              <em>"Baixar suas informações"</em>.
+            </li>
+            <li>
+              <strong>Baixar dados:</strong> Clique em{" "}
+              <em>"Baixar ou transferir informações"</em> e escolha a conta que
+              serão importados os dados. Depois de selecionar a conta, clique em
+              avançar.
+            </li>
+            <li>
+              <strong>Quantas informações você quer?:</strong> Escolha a opção{" "}
+              <em>"Algumas das suas informações"</em>. Entre as informações que
+              podem ser selecionadas, escolha a opção{" "}
+              <em>"Seguidores e Seguindo"</em> e clique em avançar.
+            </li>
+            <li>
+              <strong>Escolha onde você quer receber as informações.</strong>
+            </li>
+            <li>
+              <strong>Escolha o formato:</strong> Selecione o formato HTML e
+              clique em <em>"Criar arquivos"</em>. Você deverá esperar um tempo
+              até a solicitação ser concluída.
+            </li>
+            <li>
+              <strong>Faça o download:</strong> Baixe o arquivo e extraia o
+              conteúdo.
+            </li>
+            <li className="whitespace-break-spaces">
+              <strong>Use no sistema:</strong> No sistema, para a seção de
+              Seguidores, clique em <em>"Importar arquivos"</em> e selecione o
+              arquivo que possui o nome similar a <em>"followers.html"</em> (se
+              houver mais de um arquivo com o mesmo nome, importe todos).
+              Posteriormente, na seção "Seguindo", execute o mesmo procedimento,
+              mas importando o arquivo <em>"following.html"</em>. Depois de
+              selecionar os arquivos nas duas seções, clique em{" "}
+              <em>"Comparar"</em>.
+            </li>
+          </ol>
+          <p className="mt-4 font-bold">
+            Pronto! Agora você pode analisar quem possivelmente não te segue.
+          </p>
+        </Modal>
       </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
     </div>
   );
-}
+};
+
+export default HomePage;
