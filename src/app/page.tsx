@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import FileUploader from "@app/components/FileUploader";
 import extractUsernames from "@app/utils/extractUsernames";
 import Modal from "@app/components/Modal";
+import Image from "next/image";
 
 const HomePage = () => {
   const [followersHTMLs, setFollowersHTMLs] = useState<string[]>([]);
@@ -51,10 +52,10 @@ const HomePage = () => {
     <div className="border-1 rounded-2xl overflow-hidden">
       <header className="p-4 flex items-center justify-between gap-5 w-[500px] max-w-[500px] ">
         <div className="flex items-center justify-between gap-3">
-          <img
+          <Image
             width={35}
             height={35}
-            src="logo.webp"
+            src="/logo.webp"
             alt="logo"
             className="object-contain"
           />
@@ -141,30 +142,30 @@ const HomePage = () => {
             </li>
             <li>
               <strong>Vá para Central de Contas:</strong> Clique no ícone de
-              menu (≡) e acesse <em>"Configurações"</em>. Continuamente, clique
-              em <em>"Central de Contas"</em> e depois{" "}
-              <em>"Suas informações e permissões"</em>. Selecione a opção{" "}
-              <em>"Baixar suas informações"</em>.
+              menu (≡) e acesse <em>&quot;Configurações&quot;</em>.
+              Continuamente, clique em <em>&quot;Central de Contas&quot;</em> e
+              depois <em>&quot;Suas informações e permissões&quot;</em>.
+              Selecione a opção <em>&quot;Baixar suas informações&quot;</em>.
             </li>
             <li>
               <strong>Baixar dados:</strong> Clique em{" "}
-              <em>"Baixar ou transferir informações"</em> e escolha a conta que
-              serão importados os dados. Depois de selecionar a conta, clique em
-              avançar.
+              <em>&quot;Baixar ou transferir informações&quot;</em> e escolha a
+              conta que serão importados os dados. Depois de selecionar a conta,
+              clique em avançar.
             </li>
             <li>
               <strong>Quantas informações você quer?:</strong> Escolha a opção{" "}
-              <em>"Algumas das suas informações"</em>. Entre as informações que
-              podem ser selecionadas, escolha a opção{" "}
-              <em>"Seguidores e Seguindo"</em> e clique em avançar.
+              <em>&quot;Algumas das suas informações&quot;</em>. Entre as
+              informações que podem ser selecionadas, escolha a opção{" "}
+              <em>&quot;Seguidores e Seguindo&quot;</em> e clique em avançar.
             </li>
             <li>
               <strong>Escolha onde você quer receber as informações.</strong>
             </li>
             <li>
               <strong>Escolha o formato:</strong> Selecione o formato HTML e
-              clique em <em>"Criar arquivos"</em>. Você deverá esperar um tempo
-              até a solicitação ser concluída.
+              clique em <em>&quot;Criar arquivos&quot;</em>. Você deverá esperar
+              um tempo até a solicitação ser concluída.
             </li>
             <li>
               <strong>Faça o download:</strong> Baixe o arquivo e extraia o
@@ -172,13 +173,14 @@ const HomePage = () => {
             </li>
             <li className="whitespace-break-spaces">
               <strong>Use no sistema:</strong> No sistema, para a seção de
-              Seguidores, clique em <em>"Importar arquivos"</em> e selecione o
-              arquivo que possui o nome similar a <em>"followers.html"</em> (se
-              houver mais de um arquivo com o mesmo nome, importe todos).
-              Posteriormente, na seção "Seguindo", execute o mesmo procedimento,
-              mas importando o arquivo <em>"following.html"</em>. Depois de
+              Seguidores, clique em <em>&quot;Importar arquivos&quot;</em> e
+              selecione o arquivo que possui o nome similar a{" "}
+              <em>&quot;followers.html&quot;</em> (se houver mais de um arquivo
+              com o mesmo nome, importe todos). Posteriormente, na seção
+              &quot;Seguindo&quot;, execute o mesmo procedimento, mas importando
+              o arquivo <em>&quot;following.html&quot;</em>. Depois de
               selecionar os arquivos nas duas seções, clique em{" "}
-              <em>"Comparar"</em>.
+              <em>&quot;Comparar&quot;</em>.
             </li>
           </ol>
           <p className="mt-4 font-bold">

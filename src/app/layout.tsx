@@ -4,6 +4,7 @@ import "./globals.css";
 
 const lato = Lato({
   weight: ["400", "700"],
+  subsets: ["latin"]
 });
 
 export const metadata: Metadata = {
