@@ -21,7 +21,7 @@ export default function RootLayout({
   return (
     <html lang="pt-br">
       <body
-        className={`${lato.className} flex flex-col items-center p-4`}
+        className={`${lato.className} flex flex-col w-full items-center p-4`}
       >
         {children}
       </body>

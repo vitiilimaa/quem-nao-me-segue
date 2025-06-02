@@ -49,8 +49,8 @@ const HomePage = () => {
   }, [followersHTMLs, followingHTMLs]);
 
   return (
-    <div className="border-1 rounded-2xl overflow-hidden">
-      <header className="p-4 flex items-center justify-between gap-5 w-[500px] max-w-[500px] ">
+    <div className="border-1 rounded-2xl overflow-hidden w-full sm:w-auto">
+      <header className="p-4 flex items-center justify-between gap-y-3 gap-x-5 w-full sm:w-[500px] max-w-[500px] flex-wrap">
         <div className="flex items-center justify-between gap-3">
           <Image
             width={35}
@@ -70,7 +70,7 @@ const HomePage = () => {
         </button>
       </header>
 
-      <main className="bg-gray-100 p-4 pb-4 flex-col w-[500px] max-w-[500px]">
+      <main className="bg-gray-100 p-4 pb-4 flex-col w-full sm:w-[500px] max-w-[500px] flex-wrap">
         <div className="flex justify-between gap-4">
           <FileUploader
             id="followers"
